@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import { ProductWithCategoryDTO } from '../types/ProductWithCategoryDTO';
-import { fetchProductsWithCategory } from '../services/productService';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 
-const ProductTable: React.FC = () => {
-  const [products, setProducts] = useState<ProductWithCategoryDTO[]>([]);
+interface ProductTableProps{
+  rows: ProductWithCategoryDTO[];
+}
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await fetchProductsWithCategory();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
-    loadProducts();
-  }, []);
+const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
 
   const columns: GridColDef[] = [
     { field: 'category', headerName: 'Category'},
@@ -40,7 +28,7 @@ const ProductTable: React.FC = () => {
   return (
     <Paper sx={{ height: 630, width: '100%' }}>
       <DataGrid
-        rows={products}
+        rows={rows}
         columns={columns}
         checkboxSelection
         sx={{ border: 0 }}
