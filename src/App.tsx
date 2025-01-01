@@ -33,7 +33,7 @@ function App() {
       }
     };
 
-    loadProducts();
+    loadProducts();1
   }, []);
 
   // Hanlde filters: Filter products according to selected filters
@@ -42,7 +42,7 @@ function App() {
     const filtered = products.filter((product) => {
       const matchesName = product.name.toLowerCase().includes(newFilters.searchName.toLowerCase());
       const matchesCategory = newFilters.category ? product.category === newFilters.category : true; // If empty, pass filter
-      const matchesAvailability = newFilters.availability !== null ? product.stock > 0 : true; // If empty, pass filter
+      const matchesAvailability = newFilters.availability !== null ? product.stock > 0 === newFilters.availability: true; // If empty, pass filter
       return matchesName && matchesCategory && matchesAvailability;
     });
     setFilteredProducts(filtered);
