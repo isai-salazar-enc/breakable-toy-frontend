@@ -1,4 +1,4 @@
-import TextField from '@mui/material/TextField';
+import { TextField, FormControl, Select, MenuItem, InputLabel, Button } from '@mui/material';
 import { useEffect } from 'react';
 import React, { useState } from 'react';
 import { fetchCategories } from '../services/categoryService';
@@ -40,22 +40,42 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
 
   return (
     <div className='filter-container'>
-        <TextField id="input-name" label="Name" variant="standard" placeholder="Search by name" defaultValue={searchName} onChange={(e) => setSearchName(e.target.value)}/>
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-            <option value="">All Categories</option>
-            {categoryList.map((cat) => (
-            <option key={cat.id} value={cat.name}>
-                {cat.name}
-            </option>
-            ))}
-        </select>
-        <select value={availability?.toString() || ''} onChange={(e) => setAvailability(e.target.value === 'true' ? true : e.target.value === 'false' ? false : null)}>
-            <option value="">All</option>
-            <option value="true">Available</option>
-            <option value="false">Unavailable</option>
-        </select>
-        <button onClick={handleFilter}>Filter</button>
-        <button onClick={handleReset}>Reset</button>
+        <TextField id="input-name" label="Name" variant="outlined" placeholder="Search by name" sx={{ marginTop: 2}} value={searchName} onChange={(e) => setSearchName(e.target.value)}/>
+
+        <FormControl size="small" sx={{ minWidth: 120, textAlign: 'start' }}>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+                labelId="category-label"
+                label="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+            >
+                <MenuItem value="">All categories</MenuItem>
+                {categoryList.map((cat) => (
+                    <MenuItem key={cat.id} value={cat.name}>
+                        {cat.name}
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+        
+        <FormControl size="small" sx={{ minWidth: 120, textAlign: 'start' }}>
+            <InputLabel id="availability-label">Availability</InputLabel>
+            <Select
+                label="Availability"
+                labelId="category-label"
+                value={availability?.toString() || ''}
+                onChange={(e) => setAvailability(e.target.value === 'true' ? true : e.target.value === 'false' ? false : null)}
+            >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="true">In stock</MenuItem>
+                <MenuItem value="false">Out of stock</MenuItem>
+        </Select>
+        </FormControl>
+        <div id='filter-buttons-wrapper'>
+            <Button variant="outlined" onClick={handleReset} aria-label='Reset filters' sx={{ marginRight: 2}}>Reset</Button>
+            <Button variant="outlined" onClick={handleFilter} aria-label='Apply filters'>Search</Button>
+        </div>
     </div>
   );
 };

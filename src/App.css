@@ -6,10 +6,18 @@
 }
 
 .filter-container{
-  text-align: start;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
   border: 1px solid black;
+  padding: 0 8px;
 }
 
-table {
-  border: 1px solid black;
+.filter-container *{
+  margin-bottom: 12px;
 }
+
+#filter-buttons-wrapper{
+  text-align: end;
+}
+
