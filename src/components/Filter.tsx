@@ -18,6 +18,12 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
     onFilter({ searchName, category, availability });
   };
 
+  const handleReset = () => {
+    setSearchName('');
+    setAvailability(null);
+    setCategory('');
+  }
+
   // Fetch catgeories from API
   useEffect(() => {
     const loadCategories = async () => {
@@ -49,6 +55,7 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
             <option value="false">Unavailable</option>
         </select>
         <button onClick={handleFilter}>Filter</button>
+        <button onClick={handleReset}>Reset</button>
     </div>
   );
 };
