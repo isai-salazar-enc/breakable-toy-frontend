@@ -15,7 +15,11 @@ interface MetricsProps {
   }>;
 }
 
-const MetricsTable: React.FC = () => {
+interface MetricsTableProps {
+  productsSize: number;
+}
+
+const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
   const [metrics, setMetrics] = useState<MetricsProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +38,7 @@ const MetricsTable: React.FC = () => {
     };
 
     getMetrics();
-  }, []);
+  }, [productsSize]);
 
   if (loading) {
     return <Typography variant="h6" sx={{ marginTop: 2 }}>Loading...</Typography>;

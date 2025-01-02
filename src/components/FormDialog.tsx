@@ -84,6 +84,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              required
             />
 
             {/* Unit Price */}

@@ -8,6 +8,7 @@ import axios from 'axios';
 import FormDialog from './components/FormDialog';
 import { Product } from './types/Product';
 import { Alert, Button } from '@mui/material';
+import MetricsTable from './components/MetricsTable';
 
 
 interface Filters {
@@ -101,7 +102,7 @@ function App() {
       </div>
       <ProductTable rows={filteredProducts} />
       <FormDialog isOpen={open} onClose={handleClose} onSubmit={handleCreateProduct}></FormDialog>
-      {/* TO-DO: Add inventory metrics */}
+      <MetricsTable productsSize={products.length}/>
     </>
   )
 }

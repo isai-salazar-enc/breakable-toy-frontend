@@ -1,7 +1,6 @@
 import { ProductWithCategoryDTO } from '../types/ProductWithCategoryDTO';
 import { DataGrid, GridCellParams, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import MetricsTable from './MetricsTable';
 
 interface ProductTableProps{
   rows: ProductWithCategoryDTO[];
@@ -113,7 +112,6 @@ const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
         }}
         getRowClassName={manageRowColors}
       />
-      <MetricsTable />
     </Paper>
   );
   
