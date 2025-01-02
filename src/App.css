@@ -21,3 +21,22 @@
   text-align: end;
 }
 
+#button-wrapper{
+  text-align: start;
+}
+
+.new-product-form *{
+  margin-bottom: 12px;
+}
+
+.input-number{
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
