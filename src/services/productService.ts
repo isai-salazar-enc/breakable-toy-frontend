@@ -31,3 +31,9 @@ export const createNewProduct = async (newProduct:Omit<Product, 'id'>): Promise<
   const response = await api.post<ProductWithCategoryDTO>('/products', newProduct);
   return response.data;
 }
+
+
+export const fetchMetrics = async () => {
+    const response = await api.get('/metrics'); 
+    return response.data;
+};

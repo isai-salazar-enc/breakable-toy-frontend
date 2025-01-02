@@ -1,6 +1,7 @@
 import { ProductWithCategoryDTO } from '../types/ProductWithCategoryDTO';
 import { DataGrid, GridCellParams, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
+import MetricsTable from './MetricsTable';
 
 interface ProductTableProps{
   rows: ProductWithCategoryDTO[];
@@ -19,7 +20,6 @@ const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
         // Manage stock color
         cellClassName: (params: GridCellParams) => {
           const stock = params.value as number;
-          if (stock == 0) return 'cell-low-stock';
           if (stock < 5) return 'cell-low-stock';
           if (stock < 10) return 'cell-warning-stock';
           return '';
@@ -51,11 +51,11 @@ const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
       // Apply expiration-related color if there's an expiration date
       if (params.row.expirationDate) {
         if (expirationDate < oneWeekLater) {
-          rowClass += ' row-expiring-sooner'; // Expiring in less than 1 week
+          rowClass += ' row-expiring-sooner';
         } else if (expirationDate < twoWeeksLater) {
-          rowClass += ' row-expiring-soon'; // Expiring in 1-2 weeks
+          rowClass += ' row-expiring-soon';
         } else if (expirationDate > twoWeeksLater) {
-          rowClass += ' row-normal-exp'; // Expiring in more than 2 weeks
+          rowClass += ' row-normal-exp';
         }
       } else {
         rowClass += ' no-exp';
@@ -65,12 +65,11 @@ const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
         rowClass += ' row-low-stock';
       }
 
-      // Return the combined class for the row
       return rowClass.trim(); 
     };
 
   return (
-    <Paper sx={{ height: 630, width: '100%' }}>
+    <Paper sx={{ height: 640, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -114,6 +113,7 @@ const ProductTable: React.FC<ProductTableProps> = ({rows}) => {
         }}
         getRowClassName={manageRowColors}
       />
+      <MetricsTable />
     </Paper>
   );
   
