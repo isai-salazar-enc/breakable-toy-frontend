@@ -7,9 +7,10 @@ import { Product } from '../types/Product';
 interface ProductTableProps{
   rows: ProductWithCategoryDTO[];
   onClickEditOpen: (product: Product) => void;
+  onClickDelete: (id:number) => void;
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen}) => {
+const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onClickDelete}) => {
 
   const columns: GridColDef[] = [
     { field: 'category', headerName: 'Category'},
@@ -30,10 +31,26 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen}) => {
     {
       field: 'actions',
       sortable: false,
+      width: 180,
       headerName: 'Actions',
-      renderCell: (params: GridCellParams) => (
-        <Button variant='contained' onClick={() => onClickEditOpen(params.row as Product)}>Edit</Button>
-      ),
+      renderCell: (params: GridCellParams) => {
+        return (
+          <div>
+            {/* Edit Button */}
+            <Button variant='contained' onClick={() => onClickEditOpen(params.row as Product)}>Edit</Button>
+            
+            {/* Delete Button */}
+            <Button 
+              variant='contained'
+              color="error" 
+              onClick={() => onClickDelete(params.row.id as number)} 
+              sx={{ marginLeft: 1 }}
+            >
+              Delete
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -75,7 +92,7 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen}) => {
       <DataGrid
         rows={rows}
         columns={columns}
-        checkboxSelection
+        // checkboxSelection
         sx={{
           textAlign: 'center',
           '& .no-exp': {

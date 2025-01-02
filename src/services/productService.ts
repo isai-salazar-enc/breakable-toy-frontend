@@ -41,3 +41,9 @@ export const fetchMetrics = async () => {
     const response = await api.get('/metrics'); 
     return response.data;
 };
+
+export const deleteProduct = async(id:number) => {
+  const response = await api.delete('/products/' + id);
+  console.log(response.data);
+  return response.data;
+}

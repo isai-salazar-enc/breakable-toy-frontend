@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect } from 'react';
-import { fetchProductsWithCategory, createNewProduct, saveProduct } from './services/productService';
+import { fetchProductsWithCategory, createNewProduct, saveProduct, deleteProduct } from './services/productService';
 import { ProductWithCategoryDTO } from './types/ProductWithCategoryDTO';
 import ProductTable from './components/ProductTable'
 import Filter from './components/Filter';
@@ -133,6 +133,32 @@ function App() {
     setOpenEdit(true);
   };
 
+
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      await deleteProduct(productId);
+      setProducts((prevProducts) => {
+        const updatedProducts = prevProducts.filter((product) => product.id !== productId);
+
+        const filtered = updatedProducts.filter((product) => {
+          const matchesName = product.name.toLowerCase().includes(filters.searchName.toLowerCase());
+          const matchesCategory = filters.category ? product.category === filters.category : true;
+          const matchesAvailability = filters.availability !== null ? product.stock > 0 === filters.availability : true;
+          return matchesName && matchesCategory && matchesAvailability;
+        });
+  
+        setFilteredProducts(filtered);
+        return updatedProducts;
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(`Error while deleting product: ${error.response?.data.message}`);
+      } else {
+        setErrorMessage('An unknown error occurred.');
+      }
+    }
+  };
+
   return (
     <>
       {errorMessage && (
@@ -144,7 +170,7 @@ function App() {
       <div id='button-wrapper'>
         <Button type="button" variant='contained' onClick={handleClickOpen} id='button-create' sx={{marginY: 2}}>New product</Button>
       </div>
-      <ProductTable rows={filteredProducts} onClickEditOpen={handleEditClickOpen}/>
+      <ProductTable rows={filteredProducts} onClickEditOpen={handleEditClickOpen} onClickDelete={handleDeleteProduct}/>
       <FormDialog isOpen={open} onClose={handleClose} onSubmit={handleCreateProduct}></FormDialog>
       <EditProductDialog isOpen={openEdit} onClose={handleCloseEdit} onSave={handleSaveProduct} product={editProduct} />
       <MetricsTable productsSize={products.length}/>
