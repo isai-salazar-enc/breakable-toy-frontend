@@ -1,63 +1,71 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, Button, InputLabel, FormControl, MenuItem, Select} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogTitle, Button, TextField, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Product } from '../types/Product';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { fetchCategories } from '../services/categoryService';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Category } from '../types/Category';
+import dayjs from 'dayjs';
 
-interface ModalFormProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (newProduct: Omit<Product, 'id'>) => void;
+interface EditProductDialogProps {
+    isOpen: boolean;
+    product: Product;
+    onClose: () => void;
+    onSave: (updatedProduct: Product) => void;
 }
 
-const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [categoryList, setCategoryList] = useState<Category[]>([]);
-  const [formData, setFormData] = useState<Omit<Product, 'id'>>({
-    idCategory: 0,
-    name: '',
-    unitPrice: 0,
-    stock: 0,
-    expirationDate: undefined,
-  });
+const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, onClose, onSave }) => {
+    const [categoryList, setCategoryList] = useState<Category[]>([]);  
+    const [formData, setFormData] = useState<Product>({
+        id: 0,
+        idCategory: 0,
+        name: '',
+        unitPrice: 0,
+        stock: 0,
+        expirationDate: undefined,
+      });
 
-  // Fetch catgeories from API
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategoryList(data);
-      } catch (error) {
-        console.error('Error fetching categoriess.');
-      }
+    // Fetch catgeories from API
+    useEffect(() => {
+        console.log(formData);
+        const loadCategories = async () => {
+        try {
+            const data = await fetchCategories();
+            setCategoryList(data);
+        } catch (error) {
+            console.error('Error fetching categoriess.');
+        }};
+
+        loadCategories();
+    }, []);
+
+    useEffect(() => {
+        if (product) {
+          setFormData({ id: product.id, idCategory: product.idCategory, name: product.name, unitPrice: product.unitPrice, stock: product.stock, expirationDate: product.expirationDate});
+        }
+      }, [product]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
-    loadCategories();
-  }, []);
+    const handleDateChange = (newDate: any) => {
+        setFormData({ ...formData, expirationDate: newDate });
+    };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleDateChange = (newDate: any) => {
-    setFormData({ ...formData, expirationDate: newDate });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-    setFormData({ idCategory: 1, name: '', unitPrice: 1, stock: 0, expirationDate: undefined });
-    onClose();
-  };
+    const handleSave = (e: React.FormEvent) => {
+        e.preventDefault();
+        onSave(formData);
+        setFormData({ id:0, idCategory: 0, name: '', unitPrice: 0, stock: 0, expirationDate: undefined });
+        onClose();
+    };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogContent className="sm:max-w-md">
-        <DialogTitle>Create new product</DialogTitle>
-        <form onSubmit={handleSubmit} className='new-product-form'>
+        <DialogTitle>Save product</DialogTitle>
+        <form onSubmit={handleSave} className='new-product-form'>
             {/* Category */}
             <FormControl sx={{ textAlign: 'start', width: '100%' }}>
               <InputLabel id="category-label">Category</InputLabel>
@@ -110,14 +118,14 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Expiration date"
-                value={formData.expirationDate || null}
+                value={formData.expirationDate ? dayjs(formData.expirationDate) : null}
                 onChange={handleDateChange}
               />
             </LocalizationProvider>
 
             {/* Submit Button */}
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ marginBottom: 1 }}>
-              Create product
+              Save product
             </Button>
 
             {/* Close Button */}
@@ -130,4 +138,4 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default ModalForm;
+export default EditProductDialog;

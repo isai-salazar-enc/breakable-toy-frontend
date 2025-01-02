@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect } from 'react';
-import { fetchProductsWithCategory, createNewProduct } from './services/productService';
+import { fetchProductsWithCategory, createNewProduct, saveProduct } from './services/productService';
 import { ProductWithCategoryDTO } from './types/ProductWithCategoryDTO';
 import ProductTable from './components/ProductTable'
 import Filter from './components/Filter';
@@ -9,6 +9,7 @@ import FormDialog from './components/FormDialog';
 import { Product } from './types/Product';
 import { Alert, Button } from '@mui/material';
 import MetricsTable from './components/MetricsTable';
+import EditProductDialog from './components/EditProductDialog';
 
 
 interface Filters {
@@ -27,6 +28,8 @@ function App() {
     availability: null,
   });
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product>({id:0, idCategory:0, name:'', unitPrice:0, stock:0, expirationDate: undefined});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,6 +37,10 @@ function App() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
   };
 
   // Fetch products from API
@@ -89,6 +96,43 @@ function App() {
       }
     }
   }
+
+  // Handle product update
+  const handleSaveProduct = async (formProduct:Product) =>{
+    try {
+      const modifiedProduct = await saveProduct(formProduct);
+
+      setProducts((prevProducts) => {
+        // Replace the modified product in the previous array
+        const updatedProducts = prevProducts.map((product) =>
+          product.id === modifiedProduct.id ? modifiedProduct : product
+        );
+
+        // Apply filters on updated array
+        const filtered = updatedProducts.filter((product) => {
+          const matchesName = product.name.toLowerCase().includes(filters.searchName.toLowerCase());
+          const matchesCategory = filters.category ? product.category === filters.category : true;
+          const matchesAvailability = filters.availability !== null ? product.stock > 0 === filters.availability : true;
+          return matchesName && matchesCategory && matchesAvailability;
+        });
+
+      setFilteredProducts(filtered);
+      return updatedProducts;
+    });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(`Error while updating product: ${error.response?.data.error}`);
+      } else {
+        setErrorMessage('An unknown error ocurred.');
+      }
+    }
+  }
+
+  const handleEditClickOpen = (product: Product) => {
+    setEditProduct(product);
+    setOpenEdit(true);
+  };
+
   return (
     <>
       {errorMessage && (
@@ -100,8 +144,9 @@ function App() {
       <div id='button-wrapper'>
         <Button type="button" variant='contained' onClick={handleClickOpen} id='button-create' sx={{marginY: 2}}>New product</Button>
       </div>
-      <ProductTable rows={filteredProducts} />
+      <ProductTable rows={filteredProducts} onClickEditOpen={handleEditClickOpen}/>
       <FormDialog isOpen={open} onClose={handleClose} onSubmit={handleCreateProduct}></FormDialog>
+      <EditProductDialog isOpen={openEdit} onClose={handleCloseEdit} onSave={handleSaveProduct} product={editProduct} />
       <MetricsTable productsSize={products.length}/>
     </>
   )

@@ -32,6 +32,10 @@ export const createNewProduct = async (newProduct:Omit<Product, 'id'>): Promise<
   return response.data;
 }
 
+export const saveProduct = async (modifiedProduct:Product): Promise<ProductWithCategoryDTO> =>{ 
+  const response = await api.put<ProductWithCategoryDTO>('/products/'.concat(modifiedProduct.id.toString()), modifiedProduct);
+  return response.data;
+}
 
 export const fetchMetrics = async () => {
     const response = await api.get('/metrics'); 
