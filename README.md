@@ -1,54 +1,127 @@
-# How to run the project
-1. npm install
-2. npm run dev
+# Breakable Toy
 
-# React + TypeScript + Vite
+Breakable Toy is an inventory management system that allows users to manage products efficiently. The application provides functionalities for creating, editing, and deleting products. Users can filter products by name, category, and availability. The system also displays overall and category-specific metrics for products. The data grid feature allows users to view products in a sortable and paginated table.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React application built with TypeScript and Vite. It provides a minimal setup to get React working with Vite, including HMR (Hot Module Replacement) and some ESLint rules.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Available Scripts](#available-scripts)
+- [Dependencies](#dependencies)
+- [Development](#development)
+- [Production](#production)
+- [ESLint Configuration](#eslint-configuration)
+- [Functionality](#functionality)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To get started with this project, follow these steps:
 
-- Configure the top-level `parserOptions` property like this:
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/isai-salazar-enc/breakable-toy-frontend
+    cd breakable-toy
+    ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+2. Install the dependencies:
+    ```sh
+    npm install
+    ```
+
+3. Start the development server:
+    ```sh
+    npm run dev
+    ```
+
+## Project Structure
+
+The project structure is as follows:
+
+```
+breakable-toy/
+├── node_modules/
+├── public/
+├── src/
+│   ├── components/
+│   ├── services/
+│   ├── types/
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── index.css
+│   └── App.css
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+├── vite.config.ts
+└── README.md
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Available Scripts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+In the project directory, you can run:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+- `npm run dev`: Starts the development server.
+- `npm run build`: Builds the app for production.
+- `npm run lint`: Runs ESLint to check for linting errors.
+- `npm run preview`: Previews the production build.
+
+## Dependencies
+
+The project uses the following dependencies:
+
+- `react`: ^18.3.1
+- `react-dom`: ^18.3.1
+- `@vitejs/plugin-react`: ^1.0.0
+- `@vitejs/plugin-react-swc`: ^1.0.0
+- `typescript`: ^4.5.4
+- `vite`: ^2.7.2
+
+## Development
+
+During development, you can use the following tools and configurations:
+
+- **Vite**: A fast build tool and development server.
+- **TypeScript**: A strongly typed programming language that builds on JavaScript.
+- **ESLint**: A tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
+
+## Production
+
+To build the project for production, run:
+
+```sh
+npm run build
 ```
+
+This will create an optimized build of the application in the `dist` folder.
+
+## Functionality
+
+The application provides the following functionality:
+
+- **Product Management**: Create, edit, and delete products.
+- **Filtering**: Filter products by name, category, and availability.
+- **Metrics**: Display overall and category-specific metrics for products.
+- **Data Grid**: Display products in a data grid with sorting and pagination.
+
+### Components
+
+- `MetricsTable`: Displays metrics for products.
+- `EditProductDialog`: Dialog for editing a product.
+- `ProductTable`: Displays a table of products.
+- `Filter`: Provides filtering options for products.
+- `FormDialog`: Dialog for creating a new product.
+
+### Services
+
+- `categoryService`: Fetches categories from the API.
+- `productService`: Fetches, creates, updates, and deletes products from the API.
+
+### Types
+
+- `Product`: Defines the structure of a product.
+- `ProductWithCategoryDTO`: Defines the structure of a product with category information.
+- `Category`: Defines the structure of a category.
