@@ -1,8 +1,6 @@
 import { TextField, FormControl, Select, MenuItem, InputLabel, Button } from '@mui/material';
-import { useEffect } from 'react';
 import React, { useState } from 'react';
-import { fetchCategories } from '../services/categoryService';
-import { Category } from '../types/Category';
+import { useCategories } from '../hooks/useCategories';
 
 interface FilterProps {
   onFilter: (filters: { searchName: string; category: string; availability: boolean | null }) => void;
@@ -10,7 +8,7 @@ interface FilterProps {
 
 const Filter: React.FC<FilterProps> = ({ onFilter }) => {
   const [searchName, setSearchName] = useState('');
-  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const { categories } = useCategories(); // Fetch categories using custom hook
   const [category, setCategory] = useState('');
   const [availability, setAvailability] = useState<boolean | null>(null);
 
@@ -23,20 +21,6 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
     setAvailability(null);
     setCategory('');
   }
-
-  // Fetch catgeories from API
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategoryList(data);
-      } catch (error) {
-        console.error('Error fetching categoriess.');
-      }
-    };
-
-    loadCategories();
-  }, []);
 
   return (
     <div className='filter-container'>
@@ -51,7 +35,7 @@ const Filter: React.FC<FilterProps> = ({ onFilter }) => {
                 onChange={(e) => setCategory(e.target.value)}
             >
                 <MenuItem value="">All categories</MenuItem>
-                {categoryList.map((cat) => (
+                {categories.map((cat) => (
                     <MenuItem key={cat.id} value={cat.name}>
                         {cat.name}
                     </MenuItem>
