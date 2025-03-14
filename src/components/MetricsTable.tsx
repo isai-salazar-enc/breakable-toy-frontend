@@ -1,45 +1,13 @@
-import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
-import { fetchMetrics } from '../services/productService';
 import MetricsRow from './MetricsRow';
-
-interface MetricsProps {
-  overall: {
-    totalProducts: number;
-    totalValue: number;
-    averagePrice: number;
-  };
-  byCategory: Record<string, {
-    totalProducts: number;
-    totalValue: number;
-    averagePrice: number;
-  }>;
-}
+import { useMetrics } from '../hooks/useMetrics';
 
 interface MetricsTableProps {
   productsSize: number;
 }
 
 const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
-  const [metrics, setMetrics] = useState<MetricsProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // -- fetch metrics --
-  useEffect(() => {
-    const getMetrics = async () => {
-      try {
-        const data = await fetchMetrics();
-        setMetrics(data);
-      } catch (err) {
-        setError('Error while fetching metrics');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getMetrics();
-  }, [productsSize]);
+  const { metrics, loading, error } = useMetrics(productsSize);
 
   // -- Handle render when loading, error or empty metrics --
   if (loading) { return <Typography variant="h6" sx={{ marginTop: 2 }}>Loading...</Typography>;}
@@ -60,10 +28,10 @@ const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
         <TableBody>
           {/* Metrics By Category */}
           {Object.entries(metrics.byCategory).map(([category, data]) => (
-            <MetricsRow key={category} category={category} {...data} />
+            <MetricsRow key={category} label={category} data={data} />
           ))}
           {/* Overall Metrics */}
-          <MetricsRow key='Overall' category='Overall' {...metrics.overall} />
+          <MetricsRow key='Overall' label='Overall' data={metrics.overall} />
         </TableBody>
       </Table>
     </TableContainer>

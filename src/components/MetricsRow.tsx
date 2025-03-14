@@ -1,13 +1,18 @@
 import { TableCell, TableRow } from "@mui/material";
 import { Metric } from "../types/Metric";
 
-const MetricsRow : React.FC<Metric> = ({category, totalProducts, totalValue, averagePrice}) => {
+interface MetricsRowProps {
+    label: string,
+    data: Metric,
+}
+
+const MetricsRow : React.FC<MetricsRowProps> = ({label, data}) => {
     return (
-        <TableRow key={category}>
-            <TableCell><b>{category}</b></TableCell>
-            <TableCell>{totalProducts}</TableCell>
-            <TableCell>{totalValue.toFixed(2)}</TableCell>
-            <TableCell>{averagePrice.toFixed(2)}</TableCell>
+        <TableRow key={label}>
+            <TableCell><b>{label}</b></TableCell>
+            <TableCell>{data.totalProducts}</TableCell>
+            <TableCell>{data.totalValue.toFixed(2)}</TableCell>
+            <TableCell>{data.averagePrice.toFixed(2)}</TableCell>
         </TableRow>
     )
 }
