@@ -72,3 +72,7 @@
 .MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cell{
   text-align: left !important;
 }
+
+.MuiTableCell-root {
+  text-align: center !important;
+}

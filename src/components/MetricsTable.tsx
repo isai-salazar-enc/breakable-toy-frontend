@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import { fetchMetrics } from '../services/productService';
+import MetricsRow from './MetricsRow';
 
 interface MetricsProps {
   overall: {
@@ -24,7 +25,7 @@ const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // fetch metrics
+  // -- fetch metrics --
   useEffect(() => {
     const getMetrics = async () => {
       try {
@@ -40,17 +41,10 @@ const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
     getMetrics();
   }, [productsSize]);
 
-  if (loading) {
-    return <Typography variant="h6" sx={{ marginTop: 2 }}>Loading...</Typography>;
-  }
-
-  if (error) {
-    return <Typography variant="h6" color="error" sx={{ marginTop: 2 }}>{error}</Typography>;
-  }
-
-  if (!metrics) {
-    return <Typography variant="h6" sx={{ marginTop: 2 }}>Metrics not found</Typography>;
-  }
+  // -- Handle render when loading, error or empty metrics --
+  if (loading) { return <Typography variant="h6" sx={{ marginTop: 2 }}>Loading...</Typography>;}
+  if (error) { return <Typography variant="h6" color="error" sx={{ marginTop: 2 }}>{error}</Typography>;}
+  if (!metrics) { return <Typography variant="h6" sx={{ marginTop: 2 }}>Metrics not found</Typography>;}
 
   return (
     <TableContainer component={Paper} sx={{ marginY: 3 }}>
@@ -58,30 +52,18 @@ const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell sx={{textAlign: 'center'}}><b>Total products</b></TableCell>
-            <TableCell sx={{textAlign: 'center'}}><b>Total value</b></TableCell>
-            <TableCell sx={{textAlign: 'center'}}><b>Average price</b></TableCell>
+            <TableCell><b>Total products</b></TableCell>
+            <TableCell><b>Total value</b></TableCell>
+            <TableCell><b>Average price</b></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {/* Metrics By Category */}
           {Object.entries(metrics.byCategory).map(([category, data]) => (
-            <React.Fragment key={category}>
-              <TableRow >
-                <TableCell sx={{textAlign: 'center'}}><b>{category}</b></TableCell>
-                <TableCell sx={{textAlign: 'center'}}>{data.totalProducts}</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>{data.totalValue.toFixed(2)}</TableCell>
-                <TableCell sx={{textAlign: 'center'}}>{data.averagePrice.toFixed(2)}</TableCell>
-              </TableRow>
-            </React.Fragment>
+            <MetricsRow key={category} category={category} {...data} />
           ))}
           {/* Overall Metrics */}
-          <TableRow>
-            <TableCell sx={{textAlign: 'center'}}><b>Overall</b></TableCell>
-            <TableCell sx={{textAlign: 'center'}}>{metrics.overall.totalProducts}</TableCell>
-            <TableCell sx={{textAlign: 'center'}}>{metrics.overall.totalValue.toFixed(2)}</TableCell>
-            <TableCell sx={{textAlign: 'center'}}>{metrics.overall.averagePrice.toFixed(2)}</TableCell>
-          </TableRow>
+          <MetricsRow key='Overall' category='Overall' {...metrics.overall} />
         </TableBody>
       </Table>
     </TableContainer>
