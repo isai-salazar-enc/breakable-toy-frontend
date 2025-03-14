@@ -12,46 +12,39 @@ interface ProductTableProps{
 
 const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onClickDelete}) => {
 
+  // Helper function to determine stock cell class
+  const getStockCellColor = (params: GridCellParams): string => {
+    const stock = params.value as number;
+    if (stock < 5) return 'cell-low-stock';
+    if (stock < 10) return 'cell-warning-stock';
+    return '';
+  };
+
+  // Helper function to render action buttons ( Edit and Delete )
+  const renderActionButtons = (params: GridCellParams, onClickEditOpen: (product: Product) => void, onClickDelete: (id: number) => void) => (
+    <div>
+      <Button variant="contained" onClick={() => onClickEditOpen(params.row as Product)}>
+        Edit
+      </Button>
+      <Button variant="contained" color="error" onClick={() => onClickDelete(params.row.id as number)} sx={{ marginLeft: 1 }}>
+        Delete
+      </Button>
+    </div>
+  );
+
+  // Columns for the table
   const columns: GridColDef[] = [
     { field: 'category', headerName: 'Category'},
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'unitPrice', headerName: 'Price', type: 'number', width: 100, headerAlign: 'left' },
     { field: 'expirationDate',headerName: 'Expiration date', type: 'string' },
-    { field: 'stock', headerName: 'Stock', type: 'number', headerAlign: 'left',
-        // Manage stock color
-        cellClassName: (params: GridCellParams) => {
-          const stock = params.value as number;
-          if (stock < 5) return 'cell-low-stock';
-          if (stock < 10) return 'cell-warning-stock';
-          return '';
-        },
-    },
-    {
-      field: 'actions',
-      sortable: false,
-      width: 180,
-      headerName: 'Actions',
-      renderCell: (params: GridCellParams) => {
-        return (
-          <div>
-            {/* Edit Button */}
-            <Button variant='contained' onClick={() => onClickEditOpen(params.row as Product)}>Edit</Button>
-            
-            {/* Delete Button */}
-            <Button 
-              variant='contained'
-              color="error" 
-              onClick={() => onClickDelete(params.row.id as number)} 
-              sx={{ marginLeft: 1 }}
-            >
-              Delete
-            </Button>
-          </div>
-        );
-      },
+    { field: 'stock', headerName: 'Stock', type: 'number', headerAlign: 'left', cellClassName: getStockCellColor},
+    { field: 'actions', sortable: false, width: 180, headerName: 'Actions',
+      renderCell: (params: GridCellParams) => renderActionButtons(params, onClickEditOpen, onClickDelete), // Use helper function to reder action buttons
     },
   ];
 
+  // Function to determine row class based on stock and expiration date
   const manageRowColors = (params: GridRowParams) => {
     const expirationDate = new Date(params.row.expirationDate);
     const today = new Date();
