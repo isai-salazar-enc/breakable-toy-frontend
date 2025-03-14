@@ -40,3 +40,39 @@
   transition: border-color 0.2s ease-in-out;
 }
 
+/* Row expiration-colors */
+.no-exp {
+  background-color: none;
+}
+
+.row-normal-exp {
+  background-color: #d4edda;
+}
+
+.row-expiring-soon {
+  background-color: #fff3cd,
+}
+
+.row-expiring-sooner {
+  background-color: #f5c6cb;
+}
+
+.row-out-of-stock {
+  text-decoration: line-through;
+}
+
+.cell-low-stock {
+  color: #eb0518;
+}
+
+.cell-warning-stock {
+  color: #eb7b05;
+}
+
+.MuiDataGrid-columnHeaderTitle, .MuiDataGrid-cell{
+  text-align: left !important;
+}
+
+.MuiTableCell-root {
+  text-align: center !important;
+}

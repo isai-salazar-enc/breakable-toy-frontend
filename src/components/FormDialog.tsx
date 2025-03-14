@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, Button, InputLabel, FormControl, MenuItem, Select} from '@mui/material';
 import { Product } from '../types/Product';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { fetchCategories } from '../services/categoryService';
-import { Category } from '../types/Category';
+import { useCategories } from '../hooks/useCategories';
 
 interface ModalFormProps {
   isOpen: boolean;
@@ -14,7 +13,7 @@ interface ModalFormProps {
 }
 
 const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const { categories, error } = useCategories(); // Fetch categories using custom hook
   const [formData, setFormData] = useState<Omit<Product, 'id'>>({
     idCategory: 0,
     name: '',
@@ -22,20 +21,6 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
     stock: 0,
     expirationDate: undefined,
   });
-
-  // Fetch catgeories from API
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const data = await fetchCategories();
-        setCategoryList(data);
-      } catch (error) {
-        console.error('Error fetching categoriess.');
-      }
-    };
-
-    loadCategories();
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,6 +38,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
     onClose();
   };
 
+  // Render the edit/create form
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -68,12 +54,13 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
                 onChange={(e) => setFormData({ ...formData, idCategory: e.target.value as number })}
                 required
               >
-                {categoryList.map((cat) => (
+                {categories.map((cat) => (
                   <MenuItem key={cat.id} value={cat.id}>
                     {cat.name}
                   </MenuItem>
                 ))}
               </Select>
+              {error && <p style={{ color: 'red' }}>Failed to load categories</p>}
             </FormControl>
 
 
@@ -88,22 +75,27 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
             />
 
             {/* Unit Price */}
-            <label htmlFor="unit">Unitary price</label>
-            <input id="unit" className='input-number' type="number" name="unit" value={formData.unitPrice} min="0"
+            <TextField
+              fullWidth
+              label="Unit Price"
+              name="unitPrice"
+              type="number"
+              value={formData.unitPrice}
               onChange={(e) => setFormData({ ...formData, unitPrice: parseFloat(e.target.value) || 0 })}
-              onFocus={(e) => (e.target.style.borderColor = '#1976d2')} // Border color when focused (MUI blue)
-              onBlur={(e) => (e.target.style.borderColor = '#ccc')} // Reset border color when blurred
-              step={0.01}
               required
+              sx={{ marginTop: 2 }}
             />
 
             {/* Stock */}
-            <label htmlFor="stock">Stock</label>
-            <input id="stock" className='input-number' type="number" name="stock" value={formData.stock} min="0"
+            <TextField
+              fullWidth
+              label="Stock"
+              name="stock"
+              type="number"
+              value={formData.stock}
               onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
-              onFocus={(e) => (e.target.style.borderColor = '#1976d2')} // Border color when focused (MUI blue)
-              onBlur={(e) => (e.target.style.borderColor = '#ccc')} // Reset border color when blurred
               required
+              sx={{ marginTop: 2 }}
             />
 
             {/* Expiration Date */}

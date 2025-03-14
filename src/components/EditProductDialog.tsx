@@ -27,7 +27,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, 
 
     // Fetch catgeories from API
     useEffect(() => {
-        console.log(formData);
         const loadCategories = async () => {
         try {
             const data = await fetchCategories();
