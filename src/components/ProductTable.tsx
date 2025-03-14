@@ -15,11 +15,9 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onCli
   const columns: GridColDef[] = [
     { field: 'category', headerName: 'Category'},
     { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'unitPrice', headerName: 'Price', type: 'number', width: 100 },
+    { field: 'unitPrice', headerName: 'Price', type: 'number', width: 100, headerAlign: 'left' },
     { field: 'expirationDate',headerName: 'Expiration date', type: 'string' },
-    { field: 'stock',
-        headerName: 'Stock', 
-        type: 'number',
+    { field: 'stock', headerName: 'Stock', type: 'number', headerAlign: 'left',
         // Manage stock color
         cellClassName: (params: GridCellParams) => {
           const stock = params.value as number;
@@ -92,38 +90,6 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onCli
       <DataGrid
         rows={rows}
         columns={columns}
-        // checkboxSelection
-        sx={{
-          textAlign: 'center',
-          '& .no-exp': {
-            backgroundColor: 'none',
-          },
-          '& .row-expiring-soon': {
-            backgroundColor: '#fff3cd', // Yellow
-          },
-          '& .row-normal-exp': {
-            backgroundColor: '#d4edda', // Green
-          },
-          '& .row-expiring-sooner': {
-            backgroundColor: '#f5c6cb', // Light red
-
-          },
-          '& .row-out-of-stock': {
-            textDecoration: 'line-through',
-          },
-          '& .cell-low-stock':{
-            color: '#eb0518' // Red
-          },
-          '& .cell-warning-stock':{
-            color: '#eb7b05' // Orange
-          },
-          '& .MuiDataGrid-cell': {
-            textAlign: 'left', // Align text in all cells to the left
-          },
-          '& .MuiDataGrid-columnHeaderTitle': {
-            textAlign: 'left', // Align text in column headers to the left
-          },
-        }}
         pageSizeOptions={[10]}
         initialState={{
           pagination: {
