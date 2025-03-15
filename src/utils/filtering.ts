@@ -1,10 +1,6 @@
+import { Filters } from "../types/Filters";
 import { ProductWithCategoryDTO } from "../types/ProductWithCategoryDTO";
 
-interface Filters {
-    searchName: string;
-    category: string;
-    availability: boolean | null;
-}
 
 // Apply filters on a given array of products
 export const filterProducts = (products : ProductWithCategoryDTO[], filters : Filters) : ProductWithCategoryDTO[] => {

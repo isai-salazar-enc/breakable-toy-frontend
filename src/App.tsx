@@ -2,22 +2,16 @@ import './App.css'
 import { useState, useEffect } from 'react';
 import { fetchProductsWithCategory, createNewProduct, saveProduct, deleteProduct } from './services/productService';
 import { ProductWithCategoryDTO } from './types/ProductWithCategoryDTO';
+import { Filters } from './types/Filters';
+import { Product } from './types/Product';
 import ProductTable from './components/ProductTable'
 import Filter from './components/Filter';
 import axios from 'axios';
 import FormDialog from './components/FormDialog';
-import { Product } from './types/Product';
 import { Alert, Button } from '@mui/material';
 import MetricsTable from './components/MetricsTable';
 import EditProductDialog from './components/EditProductDialog';
 import { filterProducts } from './utils/filtering';
-
-
-interface Filters {
-  searchName: string;
-  category: string;
-  availability: boolean | null;
-}
 
 function App() {
   const [products, setProducts] = useState<ProductWithCategoryDTO[]>([]);
