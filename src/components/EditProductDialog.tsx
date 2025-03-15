@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle, Button, TextField, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Product } from '../types/Product';
-import { fetchCategories } from '../services/categoryService';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Category } from '../types/Category';
 import dayjs from 'dayjs';
+import { useCategories } from '../hooks/useCategories';
 
 interface EditProductDialogProps {
     isOpen: boolean;
@@ -15,7 +14,7 @@ interface EditProductDialogProps {
 }
 
 const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, onClose, onSave }) => {
-    const [categoryList, setCategoryList] = useState<Category[]>([]);  
+    const { categories } = useCategories(); // Fetch categories using custom hook
     const [formData, setFormData] = useState<Product>({
         id: 0,
         idCategory: 0,
@@ -24,19 +23,6 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, 
         stock: 0,
         expirationDate: undefined,
       });
-
-    // Fetch catgeories from API
-    useEffect(() => {
-        const loadCategories = async () => {
-        try {
-            const data = await fetchCategories();
-            setCategoryList(data);
-        } catch (error) {
-            console.error('Error fetching categoriess.');
-        }};
-
-        loadCategories();
-    }, []);
 
     useEffect(() => {
         if (product) {
@@ -75,7 +61,7 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, 
                 onChange={(e) => setFormData({ ...formData, idCategory: e.target.value as number })}
                 required
               >
-                {categoryList.map((cat) => (
+                {categories.map((cat) => (
                   <MenuItem key={cat.id} value={cat.id}>
                     {cat.name}
                   </MenuItem>
