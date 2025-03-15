@@ -10,6 +10,7 @@ import { Product } from './types/Product';
 import { Alert, Button } from '@mui/material';
 import MetricsTable from './components/MetricsTable';
 import EditProductDialog from './components/EditProductDialog';
+import { filterProducts } from './utils/filtering';
 
 
 interface Filters {
@@ -61,13 +62,7 @@ function App() {
   // Hanlde filters: Filter products according to selected filters
   const handleFilter = (newFilters: Filters) => {
     setFilters(newFilters);
-    const filtered = products.filter((product) => {
-      const matchesName = product.name.toLowerCase().includes(newFilters.searchName.toLowerCase());
-      const matchesCategory = newFilters.category ? product.category === newFilters.category : true; // If empty, pass filter
-      const matchesAvailability = newFilters.availability !== null ? product.stock > 0 === newFilters.availability: true; // If empty, pass filter
-      return matchesName && matchesCategory && matchesAvailability;
-    });
-    setFilteredProducts(filtered);
+    setFilteredProducts( filterProducts(products, newFilters));
   };
 
   // Handle product creation
@@ -76,16 +71,7 @@ function App() {
       const newProduct = await createNewProduct(formProduct);
       setProducts((prevProducts) => {
         const updatedProducts = [...prevProducts, newProduct];
-        
-        // Apply filters on new array, because set is async
-        const filtered = updatedProducts.filter((product) => {
-          const matchesName = product.name.toLowerCase().includes(filters.searchName.toLowerCase());
-          const matchesCategory = filters.category ? product.category === filters.category : true;
-          const matchesAvailability = filters.availability !== null ? product.stock > 0 === filters.availability : true;
-          return matchesName && matchesCategory && matchesAvailability;
-        });
-      
-        setFilteredProducts(filtered);
+        setFilteredProducts( filterProducts(updatedProducts, filters));
         return updatedProducts;
       });
     } catch (error) {
@@ -108,16 +94,8 @@ function App() {
           product.id === modifiedProduct.id ? modifiedProduct : product
         );
 
-        // Apply filters on updated array
-        const filtered = updatedProducts.filter((product) => {
-          const matchesName = product.name.toLowerCase().includes(filters.searchName.toLowerCase());
-          const matchesCategory = filters.category ? product.category === filters.category : true;
-          const matchesAvailability = filters.availability !== null ? product.stock > 0 === filters.availability : true;
-          return matchesName && matchesCategory && matchesAvailability;
-        });
-
-      setFilteredProducts(filtered);
-      return updatedProducts;
+        setFilteredProducts( filterProducts(updatedProducts, filters) ); 
+        return updatedProducts;
     });
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -133,21 +111,13 @@ function App() {
     setOpenEdit(true);
   };
 
-
+  // Handle product deletion
   const handleDeleteProduct = async (productId: number) => {
     try {
       await deleteProduct(productId);
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.filter((product) => product.id !== productId);
-
-        const filtered = updatedProducts.filter((product) => {
-          const matchesName = product.name.toLowerCase().includes(filters.searchName.toLowerCase());
-          const matchesCategory = filters.category ? product.category === filters.category : true;
-          const matchesAvailability = filters.availability !== null ? product.stock > 0 === filters.availability : true;
-          return matchesName && matchesCategory && matchesAvailability;
-        });
-  
-        setFilteredProducts(filtered);
+        setFilteredProducts(filterProducts(updatedProducts, filters));
         return updatedProducts;
       });
     } catch (error) {
