@@ -1,16 +1,16 @@
-import { ProductWithCategoryDTO } from '../types/ProductWithCategoryDTO';
 import { DataGrid, GridCellParams, GridColDef, GridRowParams } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import { Product } from '../types/Product';
+import { useProductsContext } from '../context/ProductsContext';
 
 interface ProductTableProps{
-  rows: ProductWithCategoryDTO[];
   onClickEditOpen: (product: Product) => void;
-  onClickDelete: (id:number) => void;
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onClickDelete}) => {
+const ProductTable: React.FC<ProductTableProps> = ({ onClickEditOpen}) => {
+  const { filteredProducts } = useProductsContext();
+  const { handleDeleteProduct } = useProductsContext();
 
   // Helper function to determine stock cell class
   const getStockCellColor = (params: GridCellParams): string => {
@@ -40,7 +40,7 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onCli
     { field: 'expirationDate',headerName: 'Expiration date', type: 'string' },
     { field: 'stock', headerName: 'Stock', type: 'number', headerAlign: 'left', cellClassName: getStockCellColor},
     { field: 'actions', sortable: false, width: 180, headerName: 'Actions',
-      renderCell: (params: GridCellParams) => renderActionButtons(params, onClickEditOpen, onClickDelete), // Use helper function to reder action buttons
+      renderCell: (params: GridCellParams) => renderActionButtons(params, onClickEditOpen, handleDeleteProduct), // Use helper function to reder action buttons
     },
   ];
 
@@ -81,7 +81,7 @@ const ProductTable: React.FC<ProductTableProps> = ({rows, onClickEditOpen, onCli
   return (
     <Paper sx={{ height: 640, width: '100%' }}>
       <DataGrid
-        rows={rows}
+        rows={filteredProducts}
         columns={columns}
         pageSizeOptions={[10]}
         initialState={{

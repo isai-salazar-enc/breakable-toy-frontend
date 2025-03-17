@@ -5,15 +5,16 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { useCategories } from '../hooks/useCategories';
+import { useProductsContext } from '../context/ProductsContext';
 
 interface EditProductDialogProps {
     isOpen: boolean;
     product: Product;
     onClose: () => void;
-    onSave: (updatedProduct: Product) => void;
 }
 
-const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, onClose, onSave }) => {
+const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, onClose }) => {
+    const { handleSaveProduct } = useProductsContext();
     const { categories } = useCategories(); // Fetch categories using custom hook
     const [formData, setFormData] = useState<Product>({
         id: 0,
@@ -41,7 +42,7 @@ const EditProductDialog: React.FC<EditProductDialogProps> = ({ isOpen, product, 
 
     const handleSave = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(formData);
+        handleSaveProduct(formData);
         setFormData({ id:0, idCategory: 0, name: '', unitPrice: 0, stock: 0, expirationDate: undefined });
         onClose();
     };
