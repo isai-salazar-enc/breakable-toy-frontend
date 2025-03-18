@@ -5,14 +5,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useCategories } from '../hooks/useCategories';
+import { useProductsContext } from '../context/ProductsContext';
 
 interface ModalFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (newProduct: Omit<Product, 'id'>) => void;
 }
 
-const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
+const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose }) => {
+  const { handleCreateProduct } = useProductsContext();
   const { categories, error } = useCategories(); // Fetch categories using custom hook
   const [formData, setFormData] = useState<Omit<Product, 'id'>>({
     idCategory: 0,
@@ -33,7 +34,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    handleCreateProduct(formData);
     setFormData({ idCategory: 1, name: '', unitPrice: 1, stock: 0, expirationDate: undefined });
     onClose();
   };

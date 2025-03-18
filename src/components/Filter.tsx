@@ -1,19 +1,17 @@
 import { TextField, FormControl, Select, MenuItem, InputLabel, Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useCategories } from '../hooks/useCategories';
+import { useProductsContext } from '../context/ProductsContext';
 
-interface FilterProps {
-  onFilter: (filters: { searchName: string; category: string; availability: boolean | null }) => void;
-}
-
-const Filter: React.FC<FilterProps> = ({ onFilter }) => {
+const Filter: React.FC = () => {
+  const { handleFilterProducts } = useProductsContext();
   const [searchName, setSearchName] = useState('');
   const { categories } = useCategories(); // Fetch categories using custom hook
   const [category, setCategory] = useState('');
   const [availability, setAvailability] = useState<boolean | null>(null);
 
   const handleFilter = () => {
-    onFilter({ searchName, category, availability });
+    handleFilterProducts({ searchName, category, availability });
   };
 
   const handleReset = () => {

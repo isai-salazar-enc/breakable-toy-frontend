@@ -1,13 +1,11 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import MetricsRow from './MetricsRow';
 import { useMetrics } from '../hooks/useMetrics';
+import { useProductsContext } from '../context/ProductsContext';
 
-interface MetricsTableProps {
-  productsSize: number;
-}
-
-const MetricsTable: React.FC<MetricsTableProps> = ({productsSize}) => {
-  const { metrics, loading, error } = useMetrics(productsSize);
+const MetricsTable: React.FC = () => {
+  const { size } = useProductsContext();
+  const { metrics, loading, error } = useMetrics(size);
 
   // -- Handle render when loading, error or empty metrics --
   if (loading) { return <Typography variant="h6" sx={{ marginTop: 2 }}>Loading...</Typography>;}
